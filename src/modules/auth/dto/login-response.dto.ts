@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class FxRatesDto {
+export class LoginResponseDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty()
-  fromCurrency: string;
+  accessToken: string;
 
   @IsNotEmpty()
   @IsString()
   @ApiProperty()
-  toCurrency: string;
+  email: string;
 }

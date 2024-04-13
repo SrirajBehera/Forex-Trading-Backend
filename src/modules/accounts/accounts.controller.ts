@@ -8,14 +8,13 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-// import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccountsService } from './accounts.service';
 import { TopUpAccountDto } from './dto/top-up-account.dto';
-// import { GetAccountBalanceResponse } from './dto/account-balance.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDocument } from '../auth/user.entity';
 
-// @ApiTags('Accounts')
+@ApiTags('Accounts')
 @Controller('accounts')
 @UseGuards(AuthGuard('jwt'))
 export class AccountsController {
@@ -23,8 +22,8 @@ export class AccountsController {
 
   @Post('topup')
   @UsePipes(new ValidationPipe())
-  //   @ApiOperation({ summary: 'Top up account' })
-  //   @ApiResponse({ status: 200, type: User })
+  @ApiOperation({ summary: 'Top up account' })
+  @ApiResponse({ status: 201, description: 'Account top-up successful' })
   topUpAccount(
     @Body() topUpAccountDto: TopUpAccountDto,
     @Request() req: { user: UserDocument },
@@ -34,8 +33,20 @@ export class AccountsController {
 
   @Get('balance')
   @UsePipes(new ValidationPipe())
-  //   @ApiOperation({ summary: 'Get account balance' })
-  //   @ApiResponse({ status: 200, type: GetAccountBalanceResponse })
+  @ApiOperation({ summary: 'Get account balance' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the account balance',
+    schema: {
+      example: {
+        balances: {
+          USD: 1000,
+          EUR: 500,
+          GBP: 300,
+        },
+      },
+    },
+  })
   getAccountBalance(@Request() req: { user: UserDocument }) {
     return this.accountsService.getAccountBalance(req.user.email);
   }

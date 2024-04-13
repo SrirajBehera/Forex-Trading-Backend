@@ -1,8 +1,8 @@
-// import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 export class GetAccountBalanceResponse {
-  //   @ApiProperty()
+  @ApiProperty()
   @IsNotEmpty()
   balances: Map<string, number>;
 }

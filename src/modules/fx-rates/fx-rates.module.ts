@@ -12,7 +12,7 @@ import { User, UserSchema } from '../auth/user.entity';
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     AuthModule,
-    CacheModule.register()
+    CacheModule.register(),
   ],
   controllers: [FxRatesController],
   providers: [FxRatesService, FxRateHelper, AccountsService],

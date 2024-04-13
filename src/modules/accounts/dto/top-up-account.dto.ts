@@ -1,13 +1,13 @@
-// import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class TopUpAccountDto {
-  //   @ApiProperty()
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   currency: string;
 
-  //   @ApiProperty()
+  @ApiProperty()
   @IsNumber()
   @IsNotEmpty()
   amount: number;

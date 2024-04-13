@@ -125,7 +125,7 @@ export class FxRatesService {
         currency: FxConversionDto.fromCurrency,
         amount: -FxConversionDto.amount, // Subtract the amount from the user's balance
       },
-      userEmail, // Assuming you have the user's email in FxConversionDto
+      userEmail,
     );
 
     await this.AccountsService.topUpAccount(
