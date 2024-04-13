@@ -119,6 +119,19 @@ export class FxRatesService {
       req.headers.authorization,
     );
 
+    // Retrieve user's balance for the fromCurrency
+    const userBalance = await this.AccountsService.getCurrencyBalance(
+      userEmail,
+      fromCurrency,
+    );
+
+    console.log("Balance: ", userBalance)
+
+    // Check if the user's balance is sufficient for the conversion
+    if (userBalance < FxConversionDto.amount) {
+      throw new BadRequestException('Insufficient balance');
+    }
+
     // Update the user's account balance
     await this.AccountsService.topUpAccount(
       {
