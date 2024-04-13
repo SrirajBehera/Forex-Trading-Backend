@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 // import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FxRatesService } from './fx-rates.service';
 import { FxConversionDto } from './dto/fx-conversion.dto';
@@ -6,6 +6,7 @@ import { FxConversionDto } from './dto/fx-conversion.dto';
 // import { FxRateResponse } from './dto/fx-rate-response.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { FxRatesDto } from './dto/fx-rate.dto';
+import { Request } from 'express';
 
 // @ApiTags('FX Rates')
 @Controller()
@@ -25,7 +26,7 @@ export class FxRatesController {
   @UsePipes(new ValidationPipe())
   //   @ApiOperation({ summary: 'Perform FX conversion' })
   //   @ApiResponse({ status: 200, type: FxConversionResponse })
-  convertFx(@Body() fxConversionDto: FxConversionDto) {
-    return this.fxRatesService.convertFx(fxConversionDto);
+  convertFx(@Req() req: Request, @Body() fxConversionDto: FxConversionDto) {
+    return this.fxRatesService.convertFx(req, fxConversionDto);
   }
 }

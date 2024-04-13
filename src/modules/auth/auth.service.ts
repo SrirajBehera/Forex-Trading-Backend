@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -24,6 +28,7 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
+      email: user.email,
     };
   }
 
@@ -47,5 +52,30 @@ export class AuthService {
       return user;
     }
     return null;
+  }
+
+  // async getUserEmailByIdOrToken(idOrToken: string): Promise<string> {
+  //   let userId: string;
+
+  //   // Check if the input is a JWT token or a user ID
+  //   if (this.jwtService.verify(idOrToken)) {
+  //     const { sub } = this.jwtService.decode(idOrToken);
+  //     userId = sub;
+  //   } else {
+  //     userId = idOrToken;
+  //   }
+
+  //   const user = await this.userModel.findById(userId);
+  //   return user.email;
+  // }
+
+  async getUserEmailFromToken(authHeader: string): Promise<string> {
+    try {
+      const token = authHeader.split(' ')[1]; // Extract the JWT token from the 'Bearer <token>' format
+      const decoded = this.jwtService.verify(token);
+      return decoded.email;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid JWT token');
+    }
   }
 }

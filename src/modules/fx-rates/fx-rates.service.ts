@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  Req,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -14,6 +15,9 @@ import { FxRatesDto } from './dto/fx-rate.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { AccountsService } from '../accounts/accounts.service';
+import { AuthService } from '../auth/auth.service';
+import { Request } from 'express';
 
 interface FXRateInterface {
   quoteId: string;
@@ -28,6 +32,8 @@ export class FxRatesService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private fxRateHelper: FxRateHelper,
+    private AccountsService: AccountsService,
+    private authService: AuthService,
   ) {}
 
   async getFxRate(FxRatesDto: FxRatesDto): Promise<FxRateResponse> {
@@ -96,6 +102,7 @@ export class FxRatesService {
   }
 
   async convertFx(
+    @Req() req: Request,
     FxConversionDto: FxConversionDto,
   ): Promise<FxConversionResponse> {
     const quoteId = FxConversionDto.quoteId;
@@ -107,6 +114,27 @@ export class FxRatesService {
     const fxRate = await this.getFxRateByQuoteId(quoteId, cacheKey);
 
     const convertedAmount = FxConversionDto.amount * fxRate.rate;
+
+    const userEmail = await this.authService.getUserEmailFromToken(
+      req.headers.authorization,
+    );
+
+    // Update the user's account balance
+    await this.AccountsService.topUpAccount(
+      {
+        currency: FxConversionDto.fromCurrency,
+        amount: -FxConversionDto.amount, // Subtract the amount from the user's balance
+      },
+      userEmail, // Assuming you have the user's email in FxConversionDto
+    );
+
+    await this.AccountsService.topUpAccount(
+      {
+        currency: FxConversionDto.toCurrency,
+        amount: convertedAmount, // Add the converted amount to the user's balance
+      },
+      userEmail,
+    );
 
     return { convertedAmount, currency: FxConversionDto.toCurrency };
   }
