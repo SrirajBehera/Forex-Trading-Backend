@@ -5,8 +5,6 @@ import {
   NotFoundException,
   Req,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { FxConversionDto } from './dto/fx-conversion.dto';
 import { FxConversionResponse } from './dto/fx-conversion-response.dto';
 import { FxRateResponse } from './dto/fx-rate-response.dto';
@@ -18,6 +16,7 @@ import { Cache } from 'cache-manager';
 import { AccountsService } from '../accounts/accounts.service';
 import { AuthService } from '../auth/auth.service';
 import { Request } from 'express';
+import { CurrencyValidatorService } from 'src/utils/currency-validator.service';
 
 interface FXRateInterface {
   quoteId: string;
@@ -34,17 +33,20 @@ export class FxRatesService {
     private fxRateHelper: FxRateHelper,
     private AccountsService: AccountsService,
     private authService: AuthService,
+    private currencyValidatorService: CurrencyValidatorService,
   ) {}
 
   async getFxRate(FxRatesDto: FxRatesDto): Promise<FxRateResponse> {
     const fromCurrency = FxRatesDto.fromCurrency;
     const toCurrency = FxRatesDto.toCurrency;
+
+    this.currencyValidatorService.validateCurrencies(fromCurrency, toCurrency);
+
     const cacheKey = `${fromCurrency}-${toCurrency}`;
     const cachedRateData =
       await this.cacheManager.get<FXRateInterface>(cacheKey);
 
     if (cachedRateData && cachedRateData.expiry_at > new Date()) {
-      console.log('Cached rate data');
       return {
         quoteId: cachedRateData.quoteId,
         expiry_at: cachedRateData.expiry_at.toLocaleTimeString(),
@@ -109,6 +111,8 @@ export class FxRatesService {
     const fromCurrency = FxConversionDto.fromCurrency;
     const toCurrency = FxConversionDto.toCurrency;
 
+    this.currencyValidatorService.validateCurrencies(fromCurrency, toCurrency);
+
     const cacheKey = `${fromCurrency}-${toCurrency}`;
 
     const fxRate = await this.getFxRateByQuoteId(quoteId, cacheKey);
@@ -124,8 +128,6 @@ export class FxRatesService {
       userEmail,
       fromCurrency,
     );
-
-    console.log("Balance: ", userBalance)
 
     // Check if the user's balance is sufficient for the conversion
     if (userBalance < FxConversionDto.amount) {

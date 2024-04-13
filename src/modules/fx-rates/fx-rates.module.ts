@@ -7,6 +7,7 @@ import { FxRateHelper } from 'src/utils/fx-rate-helper.service';
 import { CacheModule } from '@nestjs/cache-manager';
 import { AccountsService } from '../accounts/accounts.service';
 import { User, UserSchema } from '../auth/user.entity';
+import { CurrencyValidatorService } from 'src/utils/currency-validator.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { User, UserSchema } from '../auth/user.entity';
     CacheModule.register(),
   ],
   controllers: [FxRatesController],
-  providers: [FxRatesService, FxRateHelper, AccountsService],
+  providers: [FxRatesService, FxRateHelper, AccountsService, CurrencyValidatorService],
 })
 export class FxRatesModule {}

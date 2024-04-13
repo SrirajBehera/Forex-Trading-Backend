@@ -4,15 +4,22 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from '../auth/user.entity';
 import { TopUpAccountDto } from './dto/top-up-account.dto';
 import { GetAccountBalanceResponse } from './dto/account-balance.dto';
+import { CurrencyValidatorService } from 'src/utils/currency-validator.service';
+import { TopUpAccountResponseDto } from './dto/top-up-account-response.dto';
 
 @Injectable()
 export class AccountsService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private currencyValidatorService: CurrencyValidatorService,
+  ) {}
 
   async topUpAccount(
     topUpAccountDto: TopUpAccountDto,
     email: string,
-  ): Promise<UserDocument> {
+  ): Promise<TopUpAccountResponseDto> {
+    this.currencyValidatorService.validateCurrencies(topUpAccountDto.currency);
+
     const user = await this.userModel.findOneAndUpdate(
       { email },
       {
@@ -22,7 +29,10 @@ export class AccountsService {
       },
       { new: true, upsert: true },
     );
-    return user;
+    return {
+      email: email,
+      balances: user.balances,
+    };
   }
 
   async getAccountBalance(email: string): Promise<GetAccountBalanceResponse> {

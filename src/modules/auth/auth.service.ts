@@ -54,22 +54,7 @@ export class AuthService {
     }
     return null;
   }
-
-  // async getUserEmailByIdOrToken(idOrToken: string): Promise<string> {
-  //   let userId: string;
-
-  //   // Check if the input is a JWT token or a user ID
-  //   if (this.jwtService.verify(idOrToken)) {
-  //     const { sub } = this.jwtService.decode(idOrToken);
-  //     userId = sub;
-  //   } else {
-  //     userId = idOrToken;
-  //   }
-
-  //   const user = await this.userModel.findById(userId);
-  //   return user.email;
-  // }
-
+  
   async getUserEmailFromToken(authHeader: string): Promise<string> {
     try {
       const token = authHeader.split(' ')[1]; // Extract the JWT token from the 'Bearer <token>' format

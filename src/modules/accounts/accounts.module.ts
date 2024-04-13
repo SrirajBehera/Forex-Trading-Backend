@@ -4,6 +4,7 @@ import { AccountsController } from './accounts.controller';
 import { AccountsService } from './accounts.service';
 import { User, UserSchema } from '../auth/user.entity';
 import { AuthModule } from '../auth/auth.module';
+import { CurrencyValidatorService } from 'src/utils/currency-validator.service';
 
 @Module({
   imports: [
@@ -11,6 +12,6 @@ import { AuthModule } from '../auth/auth.module';
     AuthModule,
   ],
   controllers: [AccountsController],
-  providers: [AccountsService],
+  providers: [AccountsService, CurrencyValidatorService],
 })
 export class AccountsModule {}
