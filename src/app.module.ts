@@ -7,6 +7,7 @@ import { databaseConfig } from './config/database.config';
 import { appConfig } from './config/app.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
+import { FxRatesModule } from './modules/fx-rates/fx-rates.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AccountsModule } from './modules/accounts/accounts.module';
     MongooseModule.forRoot(databaseConfig().uri),
     AuthModule,
     AccountsModule,
+    FxRatesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
