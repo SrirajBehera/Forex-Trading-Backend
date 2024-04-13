@@ -13,6 +13,7 @@ import { AccountsService } from './accounts.service';
 import { TopUpAccountDto } from './dto/top-up-account.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDocument } from '../auth/user.entity';
+import { TopUpAccountResponseDto } from './dto/top-up-account-response.dto';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -23,7 +24,11 @@ export class AccountsController {
   @Post('topup')
   @UsePipes(new ValidationPipe())
   @ApiOperation({ summary: 'Top up account' })
-  @ApiResponse({ status: 201, description: 'Account top-up successful' })
+  @ApiResponse({
+    status: 201,
+    description: 'Account top-up successful',
+    type: TopUpAccountResponseDto,
+  })
   topUpAccount(
     @Body() topUpAccountDto: TopUpAccountDto,
     @Request() req: { user: UserDocument },

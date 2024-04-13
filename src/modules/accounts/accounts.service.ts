@@ -40,7 +40,7 @@ export class AccountsService {
     return { balances: user.balances };
   }
 
-  async getCurrencyBalance(email: string, fromCurrency: string) {
+  async getCurrencyBalance(email: string, fromCurrency: string): Promise<number> {
     const user = await this.userModel.findOne({ email });
     const balance = user.balances.get(fromCurrency);
     return balance !== undefined ? balance : -1; // Return balance for the specified currency or -1 if not found

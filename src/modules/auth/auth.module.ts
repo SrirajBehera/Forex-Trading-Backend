@@ -8,7 +8,6 @@ import { LocalStrategy } from './local.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './user.entity';
 import * as dotenv from 'dotenv';
-import { CurrencyValidatorService } from 'src/utils/currency-validator.service';
 dotenv.config();
 
 @Module({
