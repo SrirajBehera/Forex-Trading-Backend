@@ -3,6 +3,12 @@ import axios from 'axios';
 
 @Injectable()
 export class FxRateHelper {
+  /**
+   * Fetches and stores FX rates from the Alpha Vantage API.
+   * @param {string} fromCurrency - The source currency.
+   * @param {string} toCurrency - The target currency.
+   * @returns {Promise<number>} The exchange rate.
+   */
   async fetchAndStoreFxRates(
     fromCurrency: string,
     toCurrency: string,

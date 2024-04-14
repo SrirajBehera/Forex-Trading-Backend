@@ -15,6 +15,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  /**
+   * Validates the JWT payload.
+   * @param {any} payload - The payload extracted from the JWT token.
+   * @returns {Promise<UserDocument>} The user document extracted from the payload.
+   */
   async validate(payload: any): Promise<UserDocument> {
     return { id: payload.sub, email: payload.email } as UserDocument;
   }

@@ -14,11 +14,21 @@ import { LoginResponseDto } from './dto/login-response.dto';
 
 @Injectable()
 export class AuthService {
+  /**
+   * Constructor of AuthService.
+   * @param {Model<UserDocument>} userModel - The Mongoose model for User entity.
+   * @param {JwtService} jwtService - The JWT service for token generation and verification.
+   */
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
   ) {}
 
+  /**
+   * Logs in a user with the provided credentials.
+   * @param {LoginDto} loginDto - The DTO containing login credentials.
+   * @returns {Promise<LoginResponseDto>} The response containing JWT access token and user email.
+   */
   async login(loginDto: LoginDto): Promise<LoginResponseDto> {
     const user = await this.validateUser(loginDto.email, loginDto.password);
 
@@ -33,6 +43,11 @@ export class AuthService {
     };
   }
 
+  /**
+   * Registers a new user with the provided details.
+   * @param {RegisterDto} registerDto - The DTO containing registration details.
+   * @returns {Promise<any>} The response containing the newly registered user's details.
+   */
   async register(registerDto: RegisterDto): Promise<any> {
     const { email, password } = registerDto;
 
@@ -47,6 +62,12 @@ export class AuthService {
     return await newUser.save();
   }
 
+  /**
+   * Validates a user with the provided email and password.
+   * @param {string} email - The email address of the user.
+   * @param {string} password - The password of the user.
+   * @returns {Promise<UserDocument>} The user document if validation succeeds, otherwise null.
+   */
   async validateUser(email: string, password: string): Promise<UserDocument> {
     const user = await this.userModel.findOne({ email });
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -55,6 +76,12 @@ export class AuthService {
     return null;
   }
   
+  /**
+   * Retrieves the email address of the user from the JWT token.
+   * @param {string} authHeader - The authorization header containing the JWT token.
+   * @returns {Promise<string>} The email address extracted from the JWT token.
+   * @throws {UnauthorizedException} Throws an error if the JWT token is invalid.
+   */
   async getUserEmailFromToken(authHeader: string): Promise<string> {
     try {
       const token = authHeader.split(' ')[1]; // Extract the JWT token from the 'Bearer <token>' format

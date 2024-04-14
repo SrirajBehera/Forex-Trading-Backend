@@ -3,6 +3,11 @@ import { validCurrencies } from '../constants/validCurrencies';
 
 @Injectable()
 export class CurrencyValidatorService {
+  /**
+   * Validates currencies.
+   * @param {string} fromCurrency - The source currency.
+   * @param {string} toCurrency - The target currency.
+   */
   validateCurrencies(fromCurrency?: string, toCurrency?: string): void {
     if (fromCurrency && toCurrency) {
       this.validateTwoCurrencies(fromCurrency, toCurrency);
@@ -13,6 +18,11 @@ export class CurrencyValidatorService {
     }
   }
 
+  /**
+   * Validates two currencies.
+   * @param {string} fromCurrency - The source currency.
+   * @param {string} toCurrency - The target currency.
+   */
   private validateTwoCurrencies(
     fromCurrency: string,
     toCurrency: string,
@@ -29,6 +39,10 @@ export class CurrencyValidatorService {
     }
   }
 
+  /**
+   * Validates a single currency.
+   * @param {string} currency - The currency code.
+   */
   private validateOneCurrency(currency: string): void {
     const currencyValid = validCurrencies.some(
       (item) => item.code === currency,

@@ -28,14 +28,27 @@ interface FXRateInterface {
 
 @Injectable()
 export class FxRatesService {
+  /**
+   * Constructor of FxRatesService.
+   * @param {Cache} cacheManager - The cache manager.
+   * @param {FxRateHelper} fxRateHelper - The helper service for fetching FX rates.
+   * @param {AccountsService} accountsService - The service for managing user accounts.
+   * @param {AuthService} authService - The authentication service.
+   * @param {CurrencyValidatorService} currencyValidatorService - The service for validating currencies.
+   */
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private fxRateHelper: FxRateHelper,
-    private AccountsService: AccountsService,
+    private accountsService: AccountsService,
     private authService: AuthService,
     private currencyValidatorService: CurrencyValidatorService,
   ) {}
 
+  /**
+   * Retrieves FX rates.
+   * @param {FxRatesDto} FxRatesDto - The DTO containing FX rate details.
+   * @returns {Promise<FxRateResponse>} The response containing quoteId and expiry time against associated currency-pair exchange rate.
+   */
   async getFxRate(FxRatesDto: FxRatesDto): Promise<FxRateResponse> {
     const fromCurrency = FxRatesDto.fromCurrency;
     const toCurrency = FxRatesDto.toCurrency;
@@ -60,6 +73,11 @@ export class FxRatesService {
     return { quoteId, expiry_at };
   }
 
+  /**
+   * Fetches and stores FX rates.
+   * @param {FxRatesDto} FxRatesDto - The DTO containing FX rate details.
+   * @returns {Promise<FXRateInterface>} The FX rate data.
+   */
   async fetchAndStoreFxRates(FxRatesDto: FxRatesDto): Promise<FXRateInterface> {
     const fromCurrency = FxRatesDto.fromCurrency;
     const toCurrency = FxRatesDto.toCurrency;
@@ -85,6 +103,12 @@ export class FxRatesService {
     return fxRate;
   }
 
+  /**
+   * Retrieves FX rate by quoteId.
+   * @param {string} quoteId - The quoteId.
+   * @param {string} cacheKey - The cache key.
+   * @returns {Promise<FXRateInterface | null>} The FX rate data if found, otherwise null.
+   */
   async getFxRateByQuoteId(
     quoteId: string,
     cacheKey: string,
@@ -103,6 +127,12 @@ export class FxRatesService {
     return cacheRate;
   }
 
+  /**
+   * Converts FX.
+   * @param {Request} req - The HTTP request object.
+   * @param {FxConversionDto} FxConversionDto - The DTO containing FX conversion details.
+   * @returns {Promise<FxConversionResponse>} The response containing converted amount.
+   */
   async convertFx(
     @Req() req: Request,
     FxConversionDto: FxConversionDto,
@@ -124,7 +154,7 @@ export class FxRatesService {
     );
 
     // Retrieve user's balance for the fromCurrency
-    const userBalance = await this.AccountsService.getCurrencyBalance(
+    const userBalance = await this.accountsService.getCurrencyBalance(
       userEmail,
       fromCurrency,
     );
@@ -135,7 +165,7 @@ export class FxRatesService {
     }
 
     // Update the user's account balance
-    await this.AccountsService.topUpAccount(
+    await this.accountsService.topUpAccount(
       {
         currency: FxConversionDto.fromCurrency,
         amount: -FxConversionDto.amount, // Subtract the amount from the user's balance
@@ -143,7 +173,7 @@ export class FxRatesService {
       userEmail,
     );
 
-    await this.AccountsService.topUpAccount(
+    await this.accountsService.topUpAccount(
       {
         currency: FxConversionDto.toCurrency,
         amount: convertedAmount, // Add the converted amount to the user's balance
