@@ -33,7 +33,7 @@ export class AuthService {
     };
   }
 
-  async register(registerDto: RegisterDto): Promise<UserDocument> {
+  async register(registerDto: RegisterDto): Promise<any> {
     const { email, password } = registerDto;
 
     const existingUser = await this.userModel.findOne({ email });

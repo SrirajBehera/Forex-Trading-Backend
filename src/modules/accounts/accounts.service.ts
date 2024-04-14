@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from '../auth/user.entity';
 import { TopUpAccountDto } from './dto/top-up-account.dto';
 import { GetAccountBalanceResponse } from './dto/account-balance.dto';
-import { CurrencyValidatorService } from 'src/utils/currency-validator.service';
+import { CurrencyValidatorService } from '../../utils/currency-validator.service';
 import { TopUpAccountResponseDto } from './dto/top-up-account-response.dto';
 
 @Injectable()

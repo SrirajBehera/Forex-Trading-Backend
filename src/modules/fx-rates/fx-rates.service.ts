@@ -8,7 +8,7 @@ import {
 import { FxConversionDto } from './dto/fx-conversion.dto';
 import { FxConversionResponse } from './dto/fx-conversion-response.dto';
 import { FxRateResponse } from './dto/fx-rate-response.dto';
-import { FxRateHelper } from 'src/utils/fx-rate-helper.service';
+import { FxRateHelper } from '../../utils/fx-rate-helper.service';
 import { FxRatesDto } from './dto/fx-rate.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -16,7 +16,7 @@ import { Cache } from 'cache-manager';
 import { AccountsService } from '../accounts/accounts.service';
 import { AuthService } from '../auth/auth.service';
 import { Request } from 'express';
-import { CurrencyValidatorService } from 'src/utils/currency-validator.service';
+import { CurrencyValidatorService } from '../../utils/currency-validator.service';
 
 interface FXRateInterface {
   quoteId: string;
